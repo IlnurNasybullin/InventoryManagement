@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 @Service
 public class UnitValueExtractorImpl implements UnitValueExtractor<Double, String> {
 
-    private final Pattern unitValuePattern = Pattern.compile("([0-9.]+)\\s+(.*)");
+    private final Pattern unitValuePattern = Pattern.compile("(-?[0-9.]+)\\s*(.*)");
     private final UnitExtractorService<String> unitExtractor;
 
     public UnitValueExtractorImpl(UnitExtractorService<String> unitExtractor) {

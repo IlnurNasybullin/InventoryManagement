@@ -9,4 +9,5 @@ public interface MeasurementSystemService<V, U> {
     void putOrReplace(MeasureUnit<U> from, MeasureUnit<U> to, V fromTo, V toFrom);
     Optional<MeasureUnitValue<V, U>> tryCast(MeasureUnitValue<V, U> from, MeasureUnit<U> cast);
     void clearAll();
+    void addUnit(MeasureUnit<U> unit);
 }

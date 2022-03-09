@@ -53,10 +53,6 @@ public class MeasurementSystemServiceImpl implements MeasurementSystemService<Do
                 source = edge.source();
                 operator = operator.andThen(value -> value * Math.pow(edge.from() / edge.to(), degree));
             }
-
-//            if (degree > 0 && notReversed) {
-//            } else {
-//            }
         }
 
         MeasureUnit<String> castedUnit = replaceIn(from.measureUnit(), current, cast);
@@ -87,5 +83,10 @@ public class MeasurementSystemServiceImpl implements MeasurementSystemService<Do
     @Override
     public void clearAll() {
         graph.clear();
+    }
+
+    @Override
+    public void addUnit(MeasureUnit<String> unit) {
+        graph.addVertex(unit);
     }
 }

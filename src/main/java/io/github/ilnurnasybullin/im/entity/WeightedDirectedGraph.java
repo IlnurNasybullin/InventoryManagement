@@ -10,5 +10,5 @@ public interface WeightedDirectedGraph<V, E> {
     void clear();
 
     Iterator<V> breadthIterator(V vertex);
-    List<Edge<V>> path(V source, V target);
+    List<E> path(V source, V target);
 }

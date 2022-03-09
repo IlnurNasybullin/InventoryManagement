@@ -5,7 +5,7 @@ import com.beust.jcommander.Parameters;
 import io.github.ilnurnasybullin.im.dto.Task;
 import io.github.ilnurnasybullin.im.entity.AnswerParameters;
 import io.github.ilnurnasybullin.im.entity.TaskParameters;
-import io.github.ilnurnasybullin.im.service.InventoryManagementCalculationService;
+import io.github.ilnurnasybullin.im.service.CalculationService;
 import io.github.ilnurnasybullin.im.service.TaskParametersService;
 import io.github.ilnurnasybullin.im.service.TaskReaderService;
 import org.springframework.stereotype.Component;
@@ -15,17 +15,16 @@ import org.springframework.stereotype.Component;
 public class CalculateCommand implements Command {
 
     public static final String commandName= "calculate";
-
     private final TaskReaderService taskReader;
     private final TaskParametersService taskParametersService;
-    private final InventoryManagementCalculationService calculationService;
+    private final CalculationService calculationService;
 
     @Parameter(names = {"-i", "--input"}, description = "input file name")
     private String inputFilePathName;
 
     public CalculateCommand(TaskReaderService taskReader,
                             TaskParametersService taskParametersService,
-                            InventoryManagementCalculationService calculationService) {
+                            CalculationService calculationService) {
         this.taskReader = taskReader;
         this.taskParametersService = taskParametersService;
         this.calculationService = calculationService;
@@ -41,8 +40,8 @@ public class CalculateCommand implements Command {
         try {
             Task task = taskReader.readTask(inputFilePathName);
             TaskParameters parameters = taskParametersService.taskParameters(task);
-            AnswerParameters answer = calculationService.answer(parameters);
-            System.out.println(answer);
+            AnswerParameters answer = calculationService.calculate(parameters);
+            answer.variables().forEach(System.out::println);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }

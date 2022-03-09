@@ -1,10 +1,8 @@
 package io.github.ilnurnasybullin.im.service;
 
-import io.github.ilnurnasybullin.im.entity.MeasureUnit;
+import io.github.ilnurnasybullin.im.entity.MeasureUnitValue;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,16 +10,16 @@ import java.util.regex.Pattern;
 public class RuleExtractorServiceImpl implements RuleExtractorService<String> {
 
     private final MeasurementSystemService<Double, String> measurementSystemService;
-    private final UnitExtractorService<String> unitExtractor;
-    private final Pattern rulePattern = Pattern.compile("([0-9.]+)\\s+([a-zA-Zа-яА-ЯёЁ.*/\\s]+)\\s+=\\s+([0-9.]+)\\s+([a-zA-Zа-яА-ЯёЁ.*/\\s]+)");
+    private final UnitValueExtractor<Double, String> unitValueExtractor;
+    private final Pattern rulePattern = Pattern.compile("(-?[0-9.]+\\s+[a-zA-Zа-яА-ЯёЁ.*/^\\s]+)\\s+=\\s+(-?[0-9.]+\\s+[a-zA-Zа-яА-ЯёЁ.*/^\\s]+)");
 
     public RuleExtractorServiceImpl(MeasurementSystemService<Double, String> measurementSystemService,
-                                    UnitExtractorService<String> unitExtractor) {
+                                    UnitValueExtractor<Double, String> unitValueExtractor) {
         this.measurementSystemService = measurementSystemService;
-        this.unitExtractor = unitExtractor;
+        this.unitValueExtractor = unitValueExtractor;
     }
 
-    //count_1 unit_1 = count_2 unit_2
+    //unit_value_1 = unit_value_2
     @Override
     public void addRule(String rule) {
         Matcher matcher = rulePattern.matcher(rule);
@@ -29,17 +27,12 @@ public class RuleExtractorServiceImpl implements RuleExtractorService<String> {
             throw new IllegalArgumentException(String.format("Rule %s is incorrect!", rule));
         }
 
-        String count_1 = matcher.group(1);
-        String unit_1 = matcher.group(2);
-        String count_2 = matcher.group(3);
-        String unit_2 = matcher.group(4);
+        String unitValue_1 = matcher.group(1);
+        String unitValue_2 = matcher.group(2);
 
-        Double from = Double.parseDouble(count_1);
-        Double to =Double.parseDouble(count_2);
+        MeasureUnitValue<Double, String> source = unitValueExtractor.extract(unitValue_1);
+        MeasureUnitValue<Double, String> target = unitValueExtractor.extract(unitValue_2);
 
-        MeasureUnit<String> source = unitExtractor.extract(unit_1);
-        MeasureUnit<String> target = unitExtractor.extract(unit_2);
-
-        measurementSystemService.putOrReplace(source, target, from, to);
+        measurementSystemService.putOrReplace(source.measureUnit(), target.measureUnit(), source.value(), target.value());
     }
 }

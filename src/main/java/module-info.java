@@ -9,6 +9,7 @@ module InventoryManagement {
     requires java.xml.bind;
     requires com.sun.xml.bind;
     requires jcommander;
+    requires javaluator;
 
     exports io.github.ilnurnasybullin.im to spring.beans, spring.context;
     exports io.github.ilnurnasybullin.im.service to spring.beans;

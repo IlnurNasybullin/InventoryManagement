@@ -7,7 +7,14 @@ import java.util.List;
 @XmlRootElement(name = "task")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Task {
-    private Parameters parameters;
+
+    @XmlElementWrapper
+    @XmlElement(name = "constant", type = ConstantDto.class)
+    private List<ConstantDto> constants;
+
+    @XmlElementWrapper
+    @XmlElement(name = "variable", type = VariableDto.class)
+    private List<VariableDto> variables;
 
     @XmlElementWrapper
     @XmlElement(name = "rule")
@@ -17,27 +24,19 @@ public class Task {
     @XmlElement(name = "unit")
     private List<String> castUnits;
 
-    public Parameters parameters() {
-        return parameters;
-    }
-
-    public void setParameters(Parameters parameters) {
-        this.parameters = parameters;
-    }
-
     public List<String> rules() {
         return rules;
-    }
-
-    public void setRules(List<String> rules) {
-        this.rules = rules;
     }
 
     public List<String> castUnits() {
         return castUnits;
     }
 
-    public void setCastUnits(List<String> castUnits) {
-        this.castUnits = castUnits;
+    public List<ConstantDto> constants() {
+        return this.constants;
+    }
+
+    public List<VariableDto> variables() {
+        return variables;
     }
 }

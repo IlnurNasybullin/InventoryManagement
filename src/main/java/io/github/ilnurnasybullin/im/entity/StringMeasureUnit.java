@@ -2,11 +2,14 @@ package io.github.ilnurnasybullin.im.entity;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public record StringMeasureUnit(
         Map<String, Integer> units) implements MeasureUnit<String> {
+
+    public static final MeasureUnit<String> EMPTY = StringMeasureUnit.measureUnit(Map.of());
 
     public static MeasureUnit<String> baseMeasureUnit(String unit) {
         return new StringMeasureUnit(Map.of(unit, 1));
@@ -103,5 +106,25 @@ public record StringMeasureUnit(
     @Override
     public int hashCode() {
         return Objects.hash(units);
+    }
+
+    @Override
+    public String toString() {
+        StringJoiner numerator = new StringJoiner(" * ");
+        StringJoiner denominator = new StringJoiner(" * ");
+
+        units.forEach((key, value) -> {
+            if (value > 0) {
+                numerator.add(key);
+            } else {
+                denominator.add(key);
+            }
+        });
+
+        if (denominator.length() == 0) {
+            return numerator.toString();
+        }
+
+        return String.format("%s / %s", numerator, denominator);
     }
 }

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <constants>
+        <constant name="K" alias="C">40 тыс. руб.</constant>
+        <constant name="v" alias="D">20 тон./мес.</constant>
+        <constant name="T">1 кварт.</constant>
+        <constant name="s">110 руб./ящ. * дн.</constant>
+        <constant name="A">8900 руб./мес. * м * м</constant>
+        <constant name="t_ord">5 дн.</constant>
+        <constant name="C_0" alias="P">6.1 тыс. руб./ящ.</constant>
+        <constant name="Q_1" alias="q">231 ящ.</constant>
+        <constant name="disc" alias="E">3</constant>
+    </constants>
+    <variables>
+        <variable name="Q_WC_0"
+                  description="оптимальное количество ящиков без скидки при оплате склада по потребностям">
+            sqrt(2 * K * v / s)
+        </variable>
+        <variable name="L_WC_0"
+                  description="Минимальные затраты при безскидочной оплате склада по потребностям">
+            K * v * T / Q_WC_0 + s * T * Q_WC_0 / 2 + C_0 * v * T
+        </variable>
+        <variable name="Q_WC_A"
+                  description="оптимальное количество ящиков без скидки при постоянной аренде склада">
+            sqrt(2 * K * v / A)
+        </variable>
+        <variable name="L_WC_A"
+                  description="Минимальные затраты при безскидочной постоянной аренде склада">
+            K * v * T / Q_WC_A + A * T * Q_WC_A / 2 + C_0 * v * T
+        </variable>
+        <variable name="C_1"
+                  description="Стоимость ящика с учётом скидки">
+            C_0 * (1 - disc / 100)
+        </variable>
+        <variable name="Q_d1"
+                  description="">
+            if(Q_1 &lt;= Q_WC_0, Q_WC_0, Q_1)
+        </variable>
+        <variable name="L_1"
+                  description="Минимальные затраты при оплате склада по потребностям со скидкой">
+            K * v * T / Q_d1 + s * T * Q_d1 / 2 + C_1 * v * T
+        </variable>
+        <variable name="Q_d2"
+                  description="">
+            if(Q_1 &lt;= Q_WC_A, Q_WC_A, Q_1)
+        </variable>
+        <variable name="L_2"
+                  description="Минимальные затраты при постоянной аренде склада со скидкой">
+            K * v * T / Q_d2 + A * T * Q_d2 / 2 + C_1 * v * T
+        </variable>
+        <variable name="L_opt"
+                  description="Минимальные затраты">
+            min(L_WC_0, L_WC_A, L_1, L_2)
+        </variable>
+        <variable name="Q_opt"
+                  description="оптимальное количество кондитерских изделий">
+            getByIndex(argmin(L_WC_0, L_WC_A, L_1, L_2), Q_WC_0, Q_WC_A, Q_d1, Q_d2)
+        </variable>
+        <variable name="n_opt"
+                  description="Количество заказов за указанный интервал времени">
+            v * T / Q_opt
+        </variable>
+        <variable name="w_opt"
+                  description="Количество заказов за интервал времени">
+            v / Q_opt
+        </variable>
+        <variable name="t_opt"
+                  description="Интервал времени между заказами">
+            Q_opt / v
+        </variable>
+        <variable name="q_ord"
+                  description="Количество оставшихся ящиков, при котором нужно сделать заказ">
+            t_ord * v
+        </variable>
+    </variables>
+    <rules>
+        <rule>1 тыс. руб. = 1000 руб.</rule>
+        <rule>1 тон. = 1000 кг.</rule>
+        <rule>1 мес. = 30 дн.</rule>
+        <rule>1 неделя = 7 дн.</rule>
+        <rule>1 кварт. = 91 дн.</rule>
+        <rule>1 кварт. = 13 неделя</rule>
+        <rule>1 кварт. = 3 мес.</rule>
+        <rule>1 год = 365 дн.</rule>
+        <rule>1 год = 4 кварт.</rule>
+        <rule>1 год = 12 мес.</rule>
+        <rule>1 год = 52 неделя</rule>
+        <rule>1 ящ. = 60 кг.</rule>
+        <rule>10 м * м = 45 ящ.</rule>
+    </rules>
+    <castUnits>
+        <unit>мес.</unit>
+        <unit>тыс. руб.</unit>
+        <unit>ящ.</unit>
+    </castUnits>
+</task>
